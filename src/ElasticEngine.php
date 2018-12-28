@@ -166,6 +166,13 @@ class ElasticEngine extends Engine
         $this
             ->buildSearchQueryPayloadCollection($builder, $options)
             ->each(function ($payload) use (&$results) {
+                $payload = array_merge($payload, [
+                    'client' => [
+                        'curl' => [
+                            CURLOPT_CUSTOMREQUEST => 'POST',
+                        ],
+                    ],
+                ]);
                 $results = ElasticClient::search($payload);
 
                 $results['_payload'] = $payload;
