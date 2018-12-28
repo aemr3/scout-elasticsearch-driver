@@ -238,6 +238,13 @@ class ElasticEngine extends Engine
         $this
             ->buildSearchQueryPayloadCollection($builder, ['highlight' => false])
             ->each(function ($payload) use (&$count) {
+                $payload = array_merge($payload, [
+                    'client' => [
+                        'curl' => [
+                            CURLOPT_CUSTOMREQUEST => 'POST',
+                        ],
+                    ],
+                ]);
                 $result = ElasticClient::count($payload);
 
                 $count = $result['count'];
@@ -261,6 +268,13 @@ class ElasticEngine extends Engine
             ->setIfNotEmpty('body', $query)
             ->get();
 
+        $payload = array_merge($payload, [
+            'client' => [
+                'curl' => [
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                ],
+            ],
+        ]);
         return ElasticClient::search($payload);
     }
 
